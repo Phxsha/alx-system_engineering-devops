@@ -1,2 +1,2 @@
 #!/bin/bash
-cat hey > 0-hello_world
+cat hey

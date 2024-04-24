@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 # This script installs and configures Nginx web server
 
+# Check if Nginx is already installed
+if [ -x "$(command -v nginx)" ]; then
+    echo "Nginx is already installed."
+    exit 0
+fi
+
 # Install nginx with '-y' option to automatically answer yes to prompts
 apt-get update
 apt-get install -y nginx

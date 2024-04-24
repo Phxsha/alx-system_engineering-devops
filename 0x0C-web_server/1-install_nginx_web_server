@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# This script installs and configures Nginx web server
+
+# Install nginx with '-y' option to automatically answer yes to prompts
+apt-get update
+apt-get install -y nginx
+
+# Create a default HTML page with "Hello World!" content
+echo "Hello World!" > /usr/share/nginx/html/index.html
+
+# Configure Nginx to listen on port 80 and serve the default page
+cat <<EOF > /etc/nginx/sites-available/default
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /usr/share/nginx/html;
+    index index.html index.htm;
+
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
+}
+EOF
+
+# Restart Nginx
+service nginx restart

@@ -1,33 +1,28 @@
 #!/usr/bin/env bash
-# This script installs and configures Nginx web server
+# Installs Nginx with the following configurations:
+#+    Listens on port 80.
+#+    Returns a page containing "Hello World!" when queried
+#++    at the root with a curl GET request.
 
-# Check if Nginx is already installed
-if [ -x "$(command -v nginx)" ]; then
-    echo "Nginx is already installed."
-    exit 0
-fi
-
-# Install nginx with '-y' option to automatically answer yes to prompts
+#  updates the package lists for available software packages.
 apt-get update
+# installs the Nginx web server.
 apt-get install -y nginx
 
-# Create a default HTML page with "Hello World!" content
-echo "Hello World!" > /usr/share/nginx/html/index.html
-
-# Configure Nginx to listen on port 80 and serve the default page
-cat <<EOF > /etc/nginx/sites-available/default
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-
-    root /usr/share/nginx/html;
-    index index.html index.htm;
-
-    location / {
-        try_files \$uri \$uri/ =404;
-    }
+# Creates the /etc/nginx/html directory, which will serve as the document root directory for Nginx.
+mkdir /etc/nginx/html
+#  creates an empty index.html file inside the /etc/nginx/html directory.
+touch /etc/nginx/html/index.html
+#  sets the content of the index.html file to "Hello World!" using the echo command.
+echo "Hello World!" > /etc/nginx/html/index.html
+# Sets Nginx to listen on port 80 and serve files from the /etc/nginx/html directory.
+printf %s "server {
+     listen      80;
+     listen      [::]:80 default_server;
+     root        /etc/nginx/html;
+     index       index.html index.htm;
 }
-EOF
+" > /etc/nginx/sites-available/default
 
-# Restart Nginx
+# Restarts the Nginx service to apply the configuration changes.
 service nginx restart

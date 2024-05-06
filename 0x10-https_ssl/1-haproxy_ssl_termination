@@ -41,11 +41,13 @@ frontend web-tech-frontend
         default_backend web-tech-backend
 
 frontend web-tech-frontend-https
-        bind *:443 ssl crt /etc/haproxy/certs/clickviral.tech.pem
+        bind *:443 ssl crt /etc/haproxy/certs/www.phxsha.tech.pem
         http-request set-header X-Forwarded-Proto https
         default_backend web-tech-backend
 
 backend web-tech-backend
-        balance roundrobin
-        server 188587-web-01 54.84.221.42:80 check
-        server 188587-web-02 35.153.33.53:80 check
+    balance roundrobin
+    server 188587-web-01 54.84.221.42:80 check
+    server 188587-web-02 35.153.33.53:80 check
+
+

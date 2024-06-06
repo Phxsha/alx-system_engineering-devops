@@ -1,33 +1,42 @@
 #!/usr/bin/python3
+"""gets total number of subs"""
 
-"""
-querying API to get the number of subscribers for a given subreddit.
-"""
 
 import requests
 
 
-def number_of_subscribers(subreddit):
-    """
-    Queries the Reddit API and returns the number of subscribers.
+def get_reddit_token(client_id, client_secret):
+    """Handles authentication"""
+    auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
+    data = {'grant_type': 'client_credentials'}
+    headers = {'User-Agent': 'myAPI/0.0.1'}
+    res = requests.post('https://www.reddit.com/api/v1/access_token',
+                        auth=auth, data=data, headers=headers)
+    token = res.json().get('access_token')
+    return token
 
-    Args:
-        subreddit (str): The name of the subreddit.
 
-    Returns:
-        int: The number of subscribers, or 0 if the subreddit is invalid.
-    """
-    url = f"https://www.reddit.com/r/{subreddit}/about.json"
-    headers = {
-        'User-Agent': 'python:reddit.project:v1.0 (by /u/yourapp)'
-    }
+def number_of_subscribers(subreddit, client_id, client_secret):
+    """Returns the number of subscribers for a given subreddit"""
+    token = get_reddit_token(client_id, client_secret)
+    headers = {'Authorization': f'bearer {token}', 'User-Agent': 'myAPI/0.0.1'}
+    url = f"https://oauth.reddit.com/r/{subreddit}/about.json"
+    response = requests.get(url, headers=headers)
 
-    try:
-        response = requests.get(url, headers=headers, allow_redirects=False)
-        if response.status_code == 200:
-            data = response.json()
-            return data['data']['subscribers']
-        else:
-            return 0
-    except requests.RequestException:
-        return 0
+    if response.status_code == 200:
+        data = response.json().get('data')
+        if data:
+            return data.get('subscribers', 0)
+    return 0
+
+
+if __name__ == '__main__':
+    import sys
+    if len(sys.argv) != 4:
+        print(
+            "Usage: python3 0-subs.py <subreddit> <client_id> <client_secret>")
+    else:
+        subreddit = sys.argv[1]
+        client_id = sys.argv[2]
+        client_secret = sys.argv[3]
+        print(number_of_subscribers(subreddit, client_id, client_secret))

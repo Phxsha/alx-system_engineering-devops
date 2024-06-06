@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 """
-Module for querying the Reddit API to get the titles of the first 10 hot posts for a given subreddit.
+query API to get the titles of the first 10 hot posts for a given subreddit.
 """
 
 import requests
@@ -9,11 +9,11 @@ import requests
 
 def top_ten(subreddit):
     """
-    Queries the Reddit API and prints the titles of the first 10 hot posts for a given subreddit.
-    
+    Queries the Reddit API and prints the titles of the first 10 hot posts.
+
     Args:
         subreddit (str): The name of the subreddit.
-    
+
     Returns:
         None
     """
@@ -21,7 +21,7 @@ def top_ten(subreddit):
     headers = {
         'User-Agent': 'python:reddit.project:v1.0 (by /u/yourapp)'
     }
-    
+
     try:
         response = requests.get(url, headers=headers, allow_redirects=False)
         if response.status_code == 200:
